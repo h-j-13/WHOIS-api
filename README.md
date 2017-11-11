@@ -17,7 +17,7 @@ a small tools for query domain whois
 
 ### Contact
 
-H-J-13(@`13)
+h-j-13(@`13)
 z.g.13@163.com/h.j.13.new@gmail.com
 Harbin Institute of Technology at Weihai
 
