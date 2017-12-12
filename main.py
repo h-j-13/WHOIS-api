@@ -13,6 +13,7 @@ time      :   2017.11.12
 
 import json
 from flask import Flask
+from flask import request
 
 from Setting.static import Static
 from get_domain_whois import whois
@@ -32,8 +33,15 @@ def index():
 
 @app.route('/WHOIS/<domain>')
 def WHOIS(domain):
-    # show the user profile for that user
+    """获取单一域名的WHOIS数据"""
     return json.dumps(whois(domain), indent=1)
+
+
+@app.route('/WHOIS/')
+def WHOIS_list():
+    """批量获取域名的WHOIS数据"""
+    domain_list = request.args.get('domain_list', default='', type=str)
+    return str(domain_list.split(';'))
 
 
 if __name__ == '__main__':

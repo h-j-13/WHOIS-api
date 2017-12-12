@@ -3,9 +3,9 @@
 .idea
 *.xml
 *.pyc
-*.log
-*.conf
-*.json
+# *.log
+# *.conf
+# *.json
 *.tld_set
 nohup.out
 running.log.*
