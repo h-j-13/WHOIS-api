@@ -1,0 +1,38 @@
+{
+  "comment": "MaliciousULRWhois系统配置文件",
+  "database": {
+    "comment": "数据库配置文件",
+    "host": "localhost",
+    "port": 36666,
+    "user": "root",
+    "passwd": "hitwh@dns#58",
+    "charset": "utf8"
+  },
+  "whoisData": {
+    "comment": "whois所需数据",
+    "apiLogTable": "WHOIS_api.log",
+    "svripTable": "WHOIS_support.whois_srvip",
+    "proxySocksTable": "WHOIS_support.whois_proxy",
+    "whoisTldTable": "WHOIS_support.whois_tld_addr",
+    "whoisFuncFile": "service_function.dat",
+    "proxyipRefresh": 10000,
+    "socksReconnect": 3,
+    "socksTimeout": 5,
+    "DatabaseName": "Beijing_WHOWAS",
+    "whoisTable": "whois",
+    "whowasTable": "whowas",
+    "domainTable": "domain",
+    "FQDN_Table": "FQDN"
+  },
+  "System": {
+    "comment": "系统运行参数",
+    "processNum": 25,
+    "processNumLow": 15,
+    "commitNum": 100,
+    "proxySocks": false
+  },
+  "API server": {
+    "prot": 8026,
+    "frequencyPerSec": 5
+  }
+}

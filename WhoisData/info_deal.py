@@ -30,6 +30,7 @@ def get_result(domain_punycode, tld, whois_addr, func_name, data, flag):
     :return: whois 信息字典
     """
     # 返回结果初始化
+    global whois_details_first
     domain_whois = {
         "domain": str(domain_punycode),  # 域名
         "tld": tld,  # 顶级域
@@ -50,6 +51,9 @@ def get_result(domain_punycode, tld, whois_addr, func_name, data, flag):
     }
     if domain_whois['flag'] < 0:  # 错误数据直接返回 粗处理结果不调用提取函数
         return domain_whois
+
+    whois_details_first = data
+    whois_details_sec = None
 
     # 处理原始whois数据
     if func_name == 'com_manage':
@@ -98,8 +102,15 @@ def get_result(domain_punycode, tld, whois_addr, func_name, data, flag):
     # 处理NS,域名状态
     domain_whois['domain_status'] = domain_whois['domain_status'].split(";")
     domain_whois['name_server'] = domain_whois['name_server'].split(";")
-    # 去除details
-    domain_whois.pop('details')
+    # 标准化WHOIS details 字段
+    # WHOIS details 字段标准格式
+    # 一级WHOIS数据
+    # ############
+    # 二级WHOIS数据
+    domain_whois['details'] = whois_details_first
+    if whois_details_sec:
+        domain_whois['details'] += "\n##################################################\n\n"
+        domain_whois['details'] += whois_details_sec
     return domain_whois
 
 
