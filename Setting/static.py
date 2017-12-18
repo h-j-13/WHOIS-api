@@ -73,7 +73,9 @@ class Static(object):
     # API
     API_PORT = None  # API 服务器端口
     FREQUENCY_PER_SEC = None  # API 服务器访问频率
-    API_LOG_TABLE = None  # API 日志表
+    # WHOIS
+    WHOIS_THREAD_NUM = None  # 批量获取WHOIS线程数
+    RE_TRY_NUM = None # 重试次数
 
     @staticmethod
     def init():
@@ -112,7 +114,7 @@ class Static(object):
             Static.PASSWD = setting['database']['passwd']
             Static.CHARSET = setting['database']['charset']
             # API
-
+            # ---------------------------------------------------
             # 核心数据
             Static.DATABASE_NAME = setting['whoisData']['DatabaseName']
             Static.WHOIS_TABLE = setting['whoisData']['whoisTable']
@@ -128,10 +130,13 @@ class Static(object):
             Static.SOCKS_RECONNECT = setting['whoisData']['socksReconnect']
             Static.PROXY_SOCKS_TABLE = setting['whoisData']['proxySocksTable']
             Static.PROXY_SOCKS_REFRESH = setting['whoisData']['proxyipRefresh']
-            # http链接
+            # flask设置
             Static.API_PORT = setting['API server']['prot']
             Static.FREQUENCY_PER_SEC = setting['API server']['frequencyPerSec']
-            Static.API_LOG_TABLE = setting['whoisData']['apiLogTable']
+            # Static.API_LOG_TABLE = setting['whoisData']['apiLogTable']
+            # WHOIS 设置
+            Static.WHOIS_THREAD_NUM = setting['API server']['whoisThreadNum']
+            Static.RE_TRY_NUM = setting['API server']['reTryNum']
         except Exception as e:
             print '配置文件读取出错: ' + str(e)
             exit(0)
@@ -155,7 +160,7 @@ class Static(object):
 
 if __name__ == '__main__':
     # Demo
-    print Static.get_now_time()  # 获取当前事件
+    print Static.get_local_time()  # 获取当前时间
     Static.init()  # 全部初始化
     # Static.init()
     # print Static.PATH_CONF

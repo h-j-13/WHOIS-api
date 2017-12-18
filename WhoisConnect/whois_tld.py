@@ -53,7 +53,7 @@ if __name__ == '__main__':
     print id(tld)
     print id(T)
     for i in xrange(3):
-        print T.get_server_addr('cn')
+        print T.get_server_addr('pw')
     for i in xrange(3):
         print tld.get_server_addr('info')
     print str(tld.get_server_addr('tld_example'))

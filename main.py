@@ -16,10 +16,10 @@ from flask import Flask
 from flask import request
 
 from Setting.static import Static
-from get_domain_whois import whois
+from get_domain_whois import whois, whois_list
 
 Static.init()
-app = Flask("WHOIS_API")
+app = Flask("WHOIS api")
 
 
 @app.route('/')
@@ -41,7 +41,7 @@ def WHOIS(domain):
 def WHOIS_list():
     """批量获取域名的WHOIS数据"""
     domain_list = request.args.get('domain_list', default='', type=str)
-    return str(domain_list.split(';'))
+    return whois_list(domain_list.split(';'))
 
 
 if __name__ == '__main__':

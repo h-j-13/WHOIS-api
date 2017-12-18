@@ -33,6 +33,8 @@
   },
   "API server": {
     "prot": 8026,
-    "frequencyPerSec": 5
+    "frequencyPerSec": 5,
+    "whoisThreadNum": 20,
+    "reTryNum":1
   }
 }
