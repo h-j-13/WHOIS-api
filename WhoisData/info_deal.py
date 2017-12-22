@@ -77,17 +77,20 @@ def get_result(domain_punycode, tld, whois_addr, func_name, data, flag):
                 whois_details_sec = GetWhoisInfo(domain_punycode,
                                                  whois_server_sec).get()
                 if whois_details_sec is not None:
-                    domain_whois['details'] = whois_details_sec
+                    domain_whois['details'] = whois_details_first + \
+                                              "\n##############################\n\n" + \
+                                              whois_details_sec
         except WhoisConnectException as connect_error:  # 二级whois解析过程错误记录
             domain_whois['flag'] = -10 - int(str(connect_error))
     try:
-        # # 处理 detail 项中的引号,用于SQL语句 删除多余的'/'
+        # 处理 detail 项中的引号,用于SQL语句 删除多余的'/'
+        # api 返回数据 不需要处理
         # domain_whois['details'] = domain_whois['details'].replace("\\", "")
         # domain_whois['details'] = domain_whois['details'].replace("'", " \\'")
         # domain_whois['details'] = domain_whois['details'].replace('"', ' \\"')
-        # 使用提取函数处理whois获取字典
-        data = domain_whois['details']
-        domain_whois = eval('{func}(data, domain_whois)'.format(func=func_name))
+        # 使用提取函数处理whois获取字典 依次解析一级/二级WHOIS数据
+        domain_whois = eval('{func}(whois_details_first, domain_whois)'.format(func=func_name))
+        domain_whois = eval('{func}(whois_details_sec, domain_whois)'.format(func=func_name))
     except Exception as e:
         log_func.error(domain_punycode + '->' + func_name + ' 提取函数处理失败 ' + str(e))
     # 标准化时间
@@ -102,15 +105,6 @@ def get_result(domain_punycode, tld, whois_addr, func_name, data, flag):
     # 处理NS,域名状态
     domain_whois['domain_status'] = domain_whois['domain_status'].split(";")
     domain_whois['name_server'] = domain_whois['name_server'].split(";")
-    # 标准化WHOIS details 字段
-    # WHOIS details 字段标准格式
-    # 一级WHOIS数据
-    # ############
-    # 二级WHOIS数据
-    domain_whois['details'] = whois_details_first
-    if whois_details_sec:
-        domain_whois['details'] += "\n##################################################\n\n"
-        domain_whois['details'] += whois_details_sec
     return domain_whois
 
 
