@@ -176,3 +176,5 @@ whois.dotpostregistry.net : general_manage
 whois.iis.nu : general_manage
 whois.iis.se : general_manage
 whois.nic.sm : sm_manage
+whois.eu : eu_manage
+whois.tcinet.ru :ru_manage

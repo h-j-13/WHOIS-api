@@ -54,7 +54,6 @@ def get_result(domain_punycode, tld, whois_addr, func_name, data, flag):
 
     whois_details_first = data
     whois_details_sec = None
-
     # 处理原始whois数据
     if func_name == 'com_manage':
         # 针对com,net 等具有二级服务器的域名进行特殊处理
@@ -90,7 +89,8 @@ def get_result(domain_punycode, tld, whois_addr, func_name, data, flag):
         # domain_whois['details'] = domain_whois['details'].replace('"', ' \\"')
         # 使用提取函数处理whois获取字典 依次解析一级/二级WHOIS数据
         domain_whois = eval('{func}(whois_details_first, domain_whois)'.format(func=func_name))
-        domain_whois = eval('{func}(whois_details_sec, domain_whois)'.format(func=func_name))
+        if whois_details_sec:
+            domain_whois = eval('{func}(whois_details_sec, domain_whois)'.format(func=func_name))
     except Exception as e:
         log_func.error(domain_punycode + '->' + func_name + ' 提取函数处理失败 ' + str(e))
     # 标准化时间
