@@ -67,9 +67,10 @@ class ProxySocks(Info):
         self.sign_refresh += 1
         if self.sign_refresh > Static.PROXY_SOCKS_REFRESH:  # 定期刷新
             self.__socks_refresh()
-        proxy_ip_list = self.proxy_socks_dict.get(whois_server, None)
-        # log_whois.debug("proxy:"+str(proxy_ip_list))
-        if proxy_ip_list is not None:
+        proxy_ip_list = []
+        proxy_ip_list.extend(self.proxy_socks_dict.get(whois_server, []))
+        proxy_ip_list.extend(self.proxy_socks_dict.get('ALL', []))
+        if proxy_ip_list:
             return choice(proxy_ip_list)  # 返回随机一个代理ip
         else:
             return None
