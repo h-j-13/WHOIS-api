@@ -10,6 +10,8 @@ author    :   @`13
 time      :   2017.2.8
 """
 
+import copy
+
 from whois_func import *  # 提取函数
 from Setting.static import Static  # 静态变量,设置
 from domain_time import format_timestamp  # 处理标准时间函数
@@ -82,15 +84,26 @@ def get_result(domain_punycode, tld, whois_addr, func_name, data, flag):
         except WhoisConnectException as connect_error:  # 二级whois解析过程错误记录
             domain_whois['flag'] = -10 - int(str(connect_error))
     try:
-        # 处理 detail 项中的引号,用于SQL语句 删除多余的'/'
-        # api 返回数据 不需要处理
-        # domain_whois['details'] = domain_whois['details'].replace("\\", "")
-        # domain_whois['details'] = domain_whois['details'].replace("'", " \\'")
-        # domain_whois['details'] = domain_whois['details'].replace('"', ' \\"')
         # 使用提取函数处理whois获取字典 依次解析一级/二级WHOIS数据
         domain_whois = eval('{func}(whois_details_first, domain_whois)'.format(func=func_name))
         if whois_details_sec:
-            domain_whois = eval('{func}(whois_details_sec, domain_whois)'.format(func=func_name))
+            sec_domain_whois = copy.deepcopy(domain_whois)  # 这里一定要是深复制,否则会改变原始的内容
+            sec_domain_whois = eval('{func}(whois_details_sec, sec_domain_whois)'.format(func=func_name))
+            # 合并字典
+            for k in sec_domain_whois.keys():  # 只更新部分字段
+                if k in ["sponsoring_registrar",
+                         "sec_whois_server",
+                         "reg_name",
+                         "reg_phone",
+                         "reg_email",
+                         "org_name",
+                         "creation_date",
+                         "expiration_date",
+                         "updated_date",
+                         "name_server"]:
+                    if sec_domain_whois[k].strip():
+                        print k, sec_domain_whois[k]
+                        domain_whois[k] = sec_domain_whois[k]
     except Exception as e:
         log_func.error(domain_punycode + '->' + func_name + ' 提取函数处理失败 ' + str(e))
     # 标准化时间
