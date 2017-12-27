@@ -102,7 +102,6 @@ def get_result(domain_punycode, tld, whois_addr, func_name, data, flag):
                          "updated_date",
                          "name_server"]:
                     if sec_domain_whois[k].strip():
-                        print k, sec_domain_whois[k]
                         domain_whois[k] = sec_domain_whois[k]
     except Exception as e:
         log_func.error(domain_punycode + '->' + func_name + ' 提取函数处理失败 ' + str(e))
