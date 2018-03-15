@@ -143,17 +143,18 @@ def whois_list(raw_domain_list):
 if __name__ == '__main__':
     # Demo
     # print whois('baidu.com')
-    print whois_list(
-        ['baidu.com', 'sina.com', 'acfun.com', 'douyu.com', 'qq.com', 'baidu.com', 'sina.com', 'acfun.com', 'douyu.com',
-         'qq.com', 'baidu.com', 'sina.com', 'acfun.com', 'douyu.com', 'qq.com', 'baidu.com', 'sina.com', 'acfun.com',
-         'douyu.com', 'qq.com', 'baidu.com', 'sina.com', 'acfun.com', 'douyu.com', 'qq.com', 'baidu.com', 'sina.com',
-         'acfun.com', 'douyu.com', 'qq.com', 'baidu.com', 'sina.com', 'acfun.com', 'douyu.com', 'qq.com',
-         'baidu.com', 'sina.com', 'acfun.com', 'douyu.com', 'qq.com', 'baidu.com', 'sina.com', 'acfun.com', 'douyu.com',
-         'qq.com', 'baidu.com', 'sina.com', 'acfun.com', 'douyu.com', 'qq.com', 'baidu.com', 'sina.com', 'acfun.com',
-         'douyu.com', 'qq.com', 'baidu.com', 'sina.com', 'acfun.com', 'douyu.com', 'qq.com', 'baidu.com', 'sina.com',
-         'acfun.com', 'douyu.com', 'qq.com', 'baidu.com', 'sina.com', 'acfun.com', 'douyu.com', 'qq.com', 'baidu.com',
-         'acfun.com', 'douyu.com', 'qq.com', 'baidu.com', 'sina.com', 'acfun.com', 'douyu.com',
-         'qq.com', 'baidu.com', 'sina.com', 'acfun.com', 'douyu.com', 'qq.com', 'baidu.com', 'sina.com', 'acfun.com',
-         'douyu.com', 'qq.com', 'baidu.com', 'sina.com', 'acfun.com', 'douyu.com', 'qq.com', 'baidu.com', 'sina.com',
-         'acfun.com', 'douyu.com', 'qq.com', 'baidu.com', 'sina.com', 'acfun.com', 'douyu.com', 'qq.com'
-         ])
+    print whois('baidu.com')
+    # print whois_list(
+    #     ['baidu.com', 'sina.com', 'acfun.com', 'douyu.com', 'qq.com', 'baidu.com', 'sina.com', 'acfun.com', 'douyu.com',
+    #      'qq.com', 'baidu.com', 'sina.com', 'acfun.com', 'douyu.com', 'qq.com', 'baidu.com', 'sina.com', 'acfun.com',
+    #      'douyu.com', 'qq.com', 'baidu.com', 'sina.com', 'acfun.com', 'douyu.com', 'qq.com', 'baidu.com', 'sina.com',
+    #      'acfun.com', 'douyu.com', 'qq.com', 'baidu.com', 'sina.com', 'acfun.com', 'douyu.com', 'qq.com',
+    #      'baidu.com', 'sina.com', 'acfun.com', 'douyu.com', 'qq.com', 'baidu.com', 'sina.com', 'acfun.com', 'douyu.com',
+    #      'qq.com', 'baidu.com', 'sina.com', 'acfun.com', 'douyu.com', 'qq.com', 'baidu.com', 'sina.com', 'acfun.com',
+    #      'douyu.com', 'qq.com', 'baidu.com', 'sina.com', 'acfun.com', 'douyu.com', 'qq.com', 'baidu.com', 'sina.com',
+    #      'acfun.com', 'douyu.com', 'qq.com', 'baidu.com', 'sina.com', 'acfun.com', 'douyu.com', 'qq.com', 'baidu.com',
+    #      'acfun.com', 'douyu.com', 'qq.com', 'baidu.com', 'sina.com', 'acfun.com', 'douyu.com',
+    #      'qq.com', 'baidu.com', 'sina.com', 'acfun.com', 'douyu.com', 'qq.com', 'baidu.com', 'sina.com', 'acfun.com',
+    #      'douyu.com', 'qq.com', 'baidu.com', 'sina.com', 'acfun.com', 'douyu.com', 'qq.com', 'baidu.com', 'sina.com',
+    #      'acfun.com', 'douyu.com', 'qq.com', 'baidu.com', 'sina.com', 'acfun.com', 'douyu.com', 'qq.com'
+    #      ])
