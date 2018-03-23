@@ -38,10 +38,13 @@ def WHOIS(domain, cache={}):
         return json.dumps(cache[domain], indent=1)
     else:
         data = whois(domain)
-        if len(cache) >= 10000:
-            cache.popitem()
-        cache[domain] = data
-        return json.dumps(cache[domain], indent=1)
+        if data['flag'] > 0:  # 只缓存正常数据
+            if len(cache) >= 10000:
+                cache.popitem()
+            cache[domain] = data
+            return json.dumps(cache[domain], indent=1)
+        else:
+            return json.dumps(data, indent=1)
 
 
 @app.route('/WHOIS/')
