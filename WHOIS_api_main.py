@@ -32,9 +32,16 @@ def index():
 
 
 @app.route('/WHOIS/<domain>')
-def WHOIS(domain):
+def WHOIS(domain, cache={}):
     """获取单一域名的WHOIS数据"""
-    return json.dumps(whois(domain), indent=1)
+    if cache.has_key(domain):
+        return json.dumps(cache[domain], indent=1)
+    else:
+        data = whois(domain)
+        if len(cache) >= 10000:
+            cache.popitem()
+        cache[domain] = data
+        return json.dumps(cache[domain], indent=1)
 
 
 @app.route('/WHOIS/')
