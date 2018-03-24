@@ -93,6 +93,8 @@ def whois(raw_domain):
     result = get_domain_whois(raw_domain)
     end = time.time()
     if result:
+        if result.has_key('reg_date'):
+            result['creation_date'] = result['reg_date']
         log_get_whois.error(raw_domain + " -> fin. in " + str(end - start)[:5] + " sec")
         return result
     else:
