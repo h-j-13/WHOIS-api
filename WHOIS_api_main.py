@@ -38,7 +38,7 @@ def WHOIS(domain, cache={}):
         return json.dumps(cache[domain], indent=1)
     else:
         data = whois(domain)
-        if data['flag'] > 0:  # 只缓存正常数据
+        if data.has_key('flag') and data['flag'] > 0:  # 只缓存正常数据
             if len(cache) >= 10000:
                 cache.popitem()
             cache[domain] = data
