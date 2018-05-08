@@ -109,6 +109,85 @@ def whois_list_thread():
     return
 
 
+def format_WHOIS_record(WHOIS, source='WHOIS', WHOIS_server=''):
+    """格式化WHOIS记录"""
+    result = {
+        "domain": WHOIS['domain'],
+        "reg_name": WHOIS['reg_name'],
+        "registrant_organization": WHOIS['org_name'],
+        "reg_email": WHOIS['reg_email'],
+        "reg_phone": WHOIS['reg_phone'],
+        "name_server": WHOIS['name_server'],
+        "reg_date": WHOIS['creation_date'],
+        "updated_date": WHOIS['updated_date'],
+        "expir_date": WHOIS['expiration_date'],
+        "registrar": WHOIS['registrar'],
+        "domain_status": WHOIS['domain_status'],
+        "registrar_whois_server": [],
+        "registrant_phone_ext": "",
+        "reg_country": "",
+        "reg_addr": "",
+        "registry_domain_id": "",
+        "registrar_url": "",
+        "registrar_IANA_id": "",
+        "registrar_abuse_contact_email": "",
+        "registrar_abuse_contact_phone": "",
+        "registry_registrant_id": "",
+        "registrant_city": "",
+        "registrant_state_province": "",
+        "registrant_postal_code": "",
+        "reg_fax": "",
+        "registrant_fax_ext": "",
+        "registry_admin_id": "",
+        "adm_name": "",
+        "admin_organization": "",
+        "adm_addr": "",
+        "admin_city": "",
+        "admin_state_province": "",
+        "admin_postal_code": "",
+        "adm_country": "",
+        "adm_phone": "",
+        "admin_phone_ext": "",
+        "adm_fax": "",
+        "admin_fax_ext": "",
+        "adm_email": "",
+        "registry_tech_id": "",
+        "tech_name": "",
+        "tech_organization": "",
+        "tech_adr": "",
+        "tech_city": "",
+        "tech_state_province": "",
+        "tech_postal_code": "",
+        "tech_country": "",
+        "tech_phone": "",
+        "tech_phone_ext": "",
+        "tech_fax": "",
+        "tech_fax_ext": "",
+        "tech_email": "",
+        "dnssec": "",
+        'source': source
+    }
+    result_str = '{'
+    if WHOIS['sec_whois_server']:
+        result["registrar_whois_server"].append(WHOIS['sec_whois_server'])
+    if WHOIS['top_whois_server']:
+        result["registrar_whois_server"].append(WHOIS['top_whois_server'])
+    # 字符串化
+    for k, v in result.iteritems():
+        # dict2json
+        if k not in ["name_server", "registrar_whois_server", "domain_status"]:
+            result_str += '"' + str(k) + '":"' + str(v) + '", '
+        else:
+            result_str += '"' + str(k) + '":['
+            for vs in v:
+                result_str += '"' + str(vs).replace('\n', '').replace('\r\n', '') + '", '
+            result_str = result_str[:-2]
+            result_str += "], "
+    result_str = result_str[:-2]
+    result_str += "}"
+    return result_str
+
+
 def whois_list(raw_domain_list):
     """API核心函数 批量获取域名的WHOIS并记录日志"""
     start = time.time()
@@ -137,8 +216,8 @@ def whois_list(raw_domain_list):
     # 构造返回数据
     result_str = ""
     while not WHOIS_queue.empty():
-        result_str += str(WHOIS_queue.get())
-        result_str += ",\n"
+        result_str += format_WHOIS_record(WHOIS_queue.get())
+        result_str += "\n"
     return result_str
 
 

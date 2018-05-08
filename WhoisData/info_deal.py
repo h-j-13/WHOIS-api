@@ -38,7 +38,7 @@ def get_result(domain_punycode, tld, whois_addr, func_name, data, flag):
         "tld": tld,  # 顶级域
         "flag": flag,  # 状态标记
         "domain_status": "",  # 域名状态
-        "sponsoring_registrar": "",  # 注册商
+        "registrar": "",  # 注册商
         "top_whois_server": whois_addr,  # 顶级域名服务器
         "sec_whois_server": "",  # 二级域名服务器
         "reg_name": "",  # 注册姓名
