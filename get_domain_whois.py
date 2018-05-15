@@ -19,7 +19,7 @@ from Setting.global_resource import *  # 全局资源
 from Setting.static import Static  # 静态变量,设置
 from WhoisConnect import whois_connect  # Whois通信
 from WhoisData.info_deal import get_result  # Whois处理函数
-from Database.db_opreation import DataBase  # 数据库对象
+from Database.db_opreation import DataBase, Update_WHOIS_record  # 数据库对象
 
 Static.init()
 Resource.global_object_init()
@@ -84,6 +84,9 @@ def get_domain_whois(raw_domain=""):
                             data_flag)
 
     log_get_whois.info(raw_domain + ' - finish')
+
+    if whois_dict and whois_dict.has_key('flag') and whois_dict['flag'] == 1:  # 获取了正确的WHOIS数据
+        Update_WHOIS_record(whois_dict)
     return whois_dict
 
 
@@ -109,7 +112,7 @@ def whois_list_thread():
     return
 
 
-def format_WHOIS_record(WHOIS, source='WHOIS', WHOIS_server=''):
+def format_WHOIS_record(WHOIS, source='QUERY', WHOIS_server=''):
     """格式化WHOIS记录"""
     result = {
         "domain": WHOIS['domain'],
@@ -118,9 +121,9 @@ def format_WHOIS_record(WHOIS, source='WHOIS', WHOIS_server=''):
         "reg_email": WHOIS['reg_email'],
         "reg_phone": WHOIS['reg_phone'],
         "name_server": WHOIS['name_server'],
-        "reg_date": WHOIS['creation_date'],
+        "reg_date": WHOIS['reg_date'],
         "updated_date": WHOIS['updated_date'],
-        "expir_date": WHOIS['expiration_date'],
+        "expir_date": WHOIS['expir_date'],
         "registrar": WHOIS['registrar'],
         "domain_status": WHOIS['domain_status'],
         "registrar_whois_server": [],
@@ -212,7 +215,7 @@ def whois_list(raw_domain_list):
         thread.join()
     # 结束
     end = time.time()
-    log_get_whois.error("fin " + str(raw_domain_list_length) + " domains in " + str(end - start)[:5] + " sec")
+    log_get_whois.error("fin " + str(raw_domain_list_length) + " domains in " + str(end - start)[:6] + " sec")
     # 构造返回数据
     result_str = ""
     while not WHOIS_queue.empty():

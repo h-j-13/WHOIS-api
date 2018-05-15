@@ -113,7 +113,7 @@ def get_result(domain_punycode, tld, whois_addr, func_name, data, flag):
     domain_whois['reg_date'] = domain_whois['creation_date']
     domain_whois.pop('creation_date')
     domain_whois['expir_date'] = domain_whois['expiration_date']
-    domain_whois.pop('expir_date')
+    domain_whois.pop('expiration_date')
     # 处理NS,域名状态
     domain_whois['domain_status'] = domain_whois['domain_status'].split(";")
     domain_whois['name_server'] = domain_whois['name_server'].split(";")
