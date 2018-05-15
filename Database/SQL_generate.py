@@ -11,125 +11,50 @@ time      :   2017.3.23
 """
 
 
+def get_table_num(domain):
+    """获取域名所属分表序号"""
+    table_num = -1
+    # 抽取首字母
+    domain = str(domain).lower()
+    try:
+        initial = domain[0]
+    except:
+        table_num = -1
+        return table_num
+    # 基于 http://172.29.152.152:8000/dns_domain/beijing_whowas/Database/blob/master/bjwazwa.md 的
+    # 数据库设计分表原则进行分表
+    if domain.find("xn--") != -1 and initial == "x":
+        table_num = 7
+    elif initial == "s" or initial == "q" or initial == "x":
+        table_num = 1
+    elif initial == "c" or initial == "v":
+        table_num = 2
+    elif initial == "m" or initial == "n":
+        table_num = 3
+    elif initial == "a" or initial == "i":
+        table_num = 4
+    elif initial == "t" or initial == "h":
+        table_num = 5
+    elif initial == "b" or initial == "j" or initial == "o":
+        table_num = 6
+    elif initial == "p" or initial == "g":
+        table_num = 7
+    elif initial == "d" or initial == "l":
+        table_num = 8
+    elif initial == "f" or initial == "w" or initial == "u" or initial == "y" or initial == "z":
+        table_num = 9
+    elif initial == "e" or initial == "r" or initial == "k":
+        table_num = 10
+    else:  # 数字
+        table_num = 8
+    return table_num
+
+
 # SQL语句生成及优化
 class SQL_generate:
     """
     SQL语句优化类
     """
-
-    def __init__(self):
-        self.note = "SQL_refactor类 为 <malicious_domain_sys> 系统专用,请勿混用"
-
-    @staticmethod
-    def GET_WHOIS_INFO(domain, column_name, table_name):
-        """
-        :param domain: 域名
-        :param comm_name: 需要获取的字段名
-        :return: 生成获取域名whois信息的SQL
-                 失败返回 None
-        """
-        SQL = """SELECT """
-        if type(column_name) == str:
-            SQL += """ `{cn}`""".format(cn=column_name)
-        elif type(column_name) == list:
-            for column in column_name:
-                if type(column) == str:
-                    SQL += """`{cn}`, """.format(cn=column)
-                else:
-                    return None
-            SQL = SQL[:-2]
-        else:
-            return None
-        SQL += """ FROM {T}""".format(T=table_name)
-        SQL += """ WHERE `domain` = '{domain}'""".format(domain=domain)
-        return SQL
-
-    @staticmethod
-    def SET_DOMAIN(whois_dict):
-        SQL = """UPDATE `{table}` set """.format(table='domain_' + str(domain_divide(whois_dict['domain'])))
-        SQL += """`TLD` = '{Value}', """.format(Value=whois_dict['tld'])
-        SQL += """`top_whois_srv` = '{Value}' """.format(Value=whois_dict['top_whois_server'])
-        SQL += """WHERE `domain` = '{Value}'""".format(Value=whois_dict['domain'])
-        return SQL
-
-    @staticmethod
-    def SET_DOMAIN_INFO(whois_dict):
-        SQL = """UPDATE `{table}` set """.format(table='domain_'+str(domain_divide(whois_dict['domain'])))
-        SQL += """`TLD` = '{Value}', """.format(Value=whois_dict['tld'])
-        SQL += """`top_whois_srv` = '{Value}', """.format(Value=whois_dict['top_whois_server'])
-        SQL += """`whois_flag` = '{Value}' """.format(Value=whois_dict['flag'])
-        SQL += """WHERE `domain` = '{Value}'""".format(Value=whois_dict['domain'])
-        return SQL
-
-    @staticmethod
-    def SET_WHOIS_RAW_INFO(whois_dict):
-        SQL = """REPLACE INTO `{table}` set """.format(table='WHOIS_raw_' + str(domain_divide(whois_dict['domain'])))
-        SQL += """`raw_whois` = '{Value}' ,""".format(Value=whois_dict['details'])
-        SQL += """`domain` = '{Value}' """.format(Value=whois_dict['domain'])
-        return SQL
-
-    @staticmethod
-    def SET_WHOIS_INFO(whois_dict):
-        if whois_dict['phone_type'] is None:
-            whois_dict['phone_type'] = 0
-        SQL = """REPLACE INTO `{table}` set """.format(table='WHOIS_' + str(domain_divide(whois_dict['domain'])))
-        SQL += """`domain` = '{Value}', """.format(Value=whois_dict['domain'])
-        SQL += """`domain_status` = '{Value}', """.format(Value=whois_dict['domain_status'])
-        SQL += """`registrar` = '{Value}', """.format(Value=whois_dict['sponsoring_registrar'])
-        SQL += """`sec_whois_srv` = '{Value}', """.format(Value=whois_dict['sec_whois_server'])
-        SQL += """`reg_name` = '{Value}', """.format(Value=whois_dict['reg_name'])
-        SQL += """`reg_phone` = '{Value}', """.format(Value=whois_dict['reg_phone'])
-        SQL += """`phone_country_code` = '{Value}', """.format(Value=whois_dict['phone_country_code'])
-        SQL += """`phone_position_code` = '{Value}', """.format(Value=whois_dict['phone_position_code'])
-        SQL += """`phone_number` = '{Value}', """.format(Value=whois_dict['phone_number'])
-        SQL += """`phone_type` = '{Value}', """.format(Value=whois_dict['phone_type'])
-        SQL += """`reg_email` = '{Value}', """.format(Value=whois_dict['reg_email'])
-        SQL += """`org_name` = '{Value}', """.format(Value=whois_dict['org_name'])
-        if not whois_dict['creation_date'] == '':
-            SQL += """`creation_date` = '{Value}', """.format(Value=whois_dict['creation_date'])
-        if not whois_dict['expiration_date'] == '':
-            SQL += """`expiration_date` = '{Value}', """.format(Value=whois_dict['expiration_date'])
-        if not whois_dict['updated_date'] == '':
-            SQL += """`updated_date` = '{Value}', """.format(Value=whois_dict['updated_date'])
-        SQL += """`name_server` = '{Value}' """.format(Value=whois_dict['name_server'])
-        return SQL
-
-    @staticmethod
-    def WHOWAS_TRANSFORM(whowas_table_name, whois_table_name, domain):
-        """
-        :return: whois -> whowas 语句
-        """
-        SQL = """REPLACE INTO {whowas}(`domain`,`domain_status`,`registrar`,`sec_whois_srv`,`reg_name`,`reg_phone`,`phone_country_code`,`phone_position_code`,`phone_number`,`phone_type`,`reg_email`,`org_name`,`name_server`,`creation_date`,`expiration_date`,`updated_date`)
-                     SELECT * FROM {whois} WHERE domain = '{domain}'""".format(
-            whowas=whowas_table_name, whois=whois_table_name, domain=domain)
-        return SQL
-
-    @staticmethod
-    def WHOIS_INSERT(whois_dict, whois_table_name):
-        """
-        :param whois_dict: whois 信息字典
-        :param whois_table_name: whois表名
-        :return: 插入whois表的SQL语句
-        """
-        SQL = """REPLACE INTO `{whoisTable}` set """.format(whoisTable=whois_table_name)
-        SQL += """`ID` = '{Value}', """.format(Value=hash(whois_dict['domain']))
-        SQL += """`domain` = '{Value}', """.format(Value=whois_dict['domain'])
-        SQL += """`tld` = '{Value}', """.format(Value=whois_dict['tld'])
-        SQL += """`flag` = {Value}, """.format(Value=whois_dict['flag'])
-        SQL += """`domain_status` = '{Value}', """.format(Value=whois_dict['domain_status'])
-        SQL += """`sponsoring_registrar` = '{Value}', """.format(Value=whois_dict['sponsoring_registrar'])
-        SQL += """`top_whois_server` = '{Value}', """.format(Value=whois_dict['top_whois_server'])
-        SQL += """`sec_whois_server` = '{Value}', """.format(Value=whois_dict['sec_whois_server'])
-        SQL += """`reg_name` = '{Value}', """.format(Value=whois_dict['reg_name'])
-        SQL += """`reg_phone` = '{Value}', """.format(Value=whois_dict['reg_phone'])
-        SQL += """`reg_email` = '{Value}', """.format(Value=whois_dict['reg_email'])
-        SQL += """`org_name` = '{Value}', """.format(Value=whois_dict['org_name'])
-        SQL += """`name_server` = '{Value}', """.format(Value=whois_dict['name_server'])
-        SQL += """`creation_date` = '{Value}', """.format(Value=whois_dict['creation_date'])
-        SQL += """`expiration_date` = '{Value}', """.format(Value=whois_dict['expiration_date'])
-        SQL += """`updated_date` = '{Value}', """.format(Value=whois_dict['updated_date'])
-        SQL += """`details` = '{Value}' """.format(Value=whois_dict['details'])
-        return SQL
 
     @staticmethod
     def PROXY_INFO(proxy_table_name):
@@ -162,37 +87,51 @@ class SQL_generate:
         return SQL
 
     @staticmethod
-    def GET_DOMAIN_FOR_HTTP_STATUS(domain_index_Table, gen_type):
-        """
-        获取需要判断解析情况的域名的域名
-        :param domain_index_Table: TLD表
-        :param gen_type: 生成语句类型
-        :return: 获取TLD（顶级域）对应的whois服务器的SQL语句
-        """
-        SQL = """SELECT domain FROM  {T} """.format(
-            T=domain_index_Table)
-        if gen_type == 0:
-            return SQL
-        elif gen_type == 1:
-            SQL += """ WHERE available = -10 """
-        elif gen_type == -1:
-            SQL += """ WHERE available != 1 """
+    def INSERT_FQDN(domain, malicious_type='unknown', source='online'):
+        return """INSERT IGNORE Beijing_WHOWAS.FQDN SET FQDN = '{f}',domain = '{d}',malicious_type='{mt}', source='{s}';""".format(
+            f=domain, d=domain, mt=malicious_type, s=source
+        )
+
+    @staticmethod
+    def INSERT_DOMAIN(whois_dict):
+        SQL = """INSERT IGNORE Beijing_WHOWAS.`{table}` set """.format(
+            table='domain_' + str(get_table_num(whois_dict['domain'])))
+        SQL += """`TLD` = '{Value}', """.format(Value=whois_dict['tld'])
+        SQL += """`top_whois_srv` = '{Value}', """.format(Value=whois_dict['top_whois_server'])
+        SQL += """`whois_flag` = '{Value}', """.format(Value=whois_dict['flag'])
+        SQL += """`domain` = '{Value}' """.format(Value=whois_dict['domain'])
         return SQL
 
     @staticmethod
-    def UPDATE_DOMAIN_HTTP_STATUS(domain_Status_Table, domain, available, HTTPcode):
-        """
-        更新域名的解析情况以及HTTPcode
-        :param domain_Status_Table: TLD表
-        :return: 获取TLD（顶级域）对应的whois服务器的SQL语句
-        """
-        SQL = """UPDATE `{T}` SET `HTTPcode`= {hc}, `available`={a} WHERE `domain` = '{domain}' """.format(
-            T=domain_Status_Table, hc=HTTPcode, a=available, domain=domain)
+    def INSERT_WHOIS_RAW(whois_dict):
+        SQL = """INSERT IGNORE Beijing_WHOWAS.`{table}` set """.format(
+            table='WHOIS_raw_' + str(get_table_num(whois_dict['domain'])))
+        SQL += """`raw_whois` = '{Value}' ,""".format(Value=whois_dict['details'])
+        SQL += """`domain` = '{Value}' """.format(Value=whois_dict['domain'])
         return SQL
 
     @staticmethod
-    def GET_DOMAIN_DIVIDE(domain_table,domain):
-        SQL = """INSERT INTO `{table}`(`domain`) VALUES('{record}')""".format(table=domain_table, record=domain)
+    def INSERT_WHOIS(whois_dict):
+        """
+        :param whois_dict: whois 信息字典
+        :param whois_table_name: whois表名
+        :return: 插入whois表的SQL语句
+        """
+
+        SQL = """INSERT IGNORE Beijing_WHOWAS.`{table}` set """.format(
+            table='WHOIS_' + str(get_table_num(whois_dict['domain'])))
+        SQL += """`domain` = '{Value}', """.format(Value=whois_dict['domain'])
+        SQL += """`domain_status` = '{Value}', """.format(Value=whois_dict['domain_status'])
+        SQL += """`registrar` = '{Value}', """.format(Value=whois_dict['sponsoring_registrar'])
+        SQL += """`sec_whois_srv` = '{Value}', """.format(Value=whois_dict['sec_whois_server'])
+        SQL += """`reg_name` = '{Value}', """.format(Value=whois_dict['reg_name'])
+        SQL += """`reg_phone` = '{Value}', """.format(Value=whois_dict['reg_phone'])
+        SQL += """`reg_email` = '{Value}', """.format(Value=whois_dict['reg_email'])
+        SQL += """`org_name` = '{Value}', """.format(Value=whois_dict['org_name'])
+        SQL += """`name_server` = '{Value}', """.format(Value=";".join(whois_dict['name_server']))
+        SQL += """`creation_date` = '{Value}', """.format(Value=whois_dict['reg_date'])
+        SQL += """`expiration_date` = '{Value}', """.format(Value=whois_dict['expir_date'])
+        SQL += """`updated_date` = '{Value}' """.format(Value=whois_dict['updated_date'])
         return SQL
 
 
