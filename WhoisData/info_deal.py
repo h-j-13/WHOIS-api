@@ -50,6 +50,8 @@ def get_result(domain_punycode, tld, whois_addr, func_name, data, flag):
         "updated_date": "",  # 更新时间
         "details": data,  # 细节
         "name_server": "",  # 域名服务器
+        "reg_date": "",
+        "expir_date": "",
     }
     if domain_whois['flag'] < 0:  # 错误数据直接返回 粗处理结果不调用提取函数
         return domain_whois
@@ -91,8 +93,7 @@ def get_result(domain_punycode, tld, whois_addr, func_name, data, flag):
             sec_domain_whois = eval('{func}(whois_details_sec, sec_domain_whois)'.format(func=func_name))
             # 合并字典
             for k in sec_domain_whois.keys():  # 只更新部分字段
-                if k in ["sponsoring_registrar",
-                         "sec_whois_server",
+                if k in ["sec_whois_server",
                          "reg_name",
                          "reg_phone",
                          "reg_email",

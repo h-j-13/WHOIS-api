@@ -117,12 +117,11 @@ class SQL_generate:
         :param whois_table_name: whois表名
         :return: 插入whois表的SQL语句
         """
-
         SQL = """INSERT IGNORE Beijing_WHOWAS.`{table}` set """.format(
             table='WHOIS_' + str(get_table_num(whois_dict['domain'])))
         SQL += """`domain` = '{Value}', """.format(Value=whois_dict['domain'])
         SQL += """`domain_status` = '{Value}', """.format(Value=whois_dict['domain_status'])
-        SQL += """`registrar` = '{Value}', """.format(Value=whois_dict['sponsoring_registrar'])
+        SQL += """`registrar` = '{Value}', """.format(Value=whois_dict['registrar'])
         SQL += """`sec_whois_srv` = '{Value}', """.format(Value=whois_dict['sec_whois_server'])
         SQL += """`reg_name` = '{Value}', """.format(Value=whois_dict['reg_name'])
         SQL += """`reg_phone` = '{Value}', """.format(Value=whois_dict['reg_phone'])
