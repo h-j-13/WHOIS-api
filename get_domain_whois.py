@@ -55,12 +55,12 @@ def get_domain_whois(raw_domain=""):
 
     # 获取用于通信的whois服务器地址
     # 优先级 : ip > whois地址 > None (失败)
-    WhoisConnectAddr = WhoisSerIP
-    if WhoisConnectAddr is None:
-        WhoisConnectAddr = WhoisSerAddr
-    if not WhoisConnectAddr:
-        log_get_whois.error(raw_domain + ' - fail : whois通信地址获取失败')
-        return None
+    WhoisConnectAddr = WhoisSerAddr
+    # if WhoisConnectAddr is None:
+    #     WhoisConnectAddr = WhoisSerAddr
+    # if not WhoisConnectAddr:
+    #     log_get_whois.error(raw_domain + ' - fail : whois通信地址获取失败')
+    #     return None
 
     # 获取原始whois数据
     raw_whois_data = ''  # 原始whois数据
