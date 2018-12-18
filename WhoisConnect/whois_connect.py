@@ -96,8 +96,9 @@ class GetWhoisInfo:
         需要：socks.py (ver 1.5.7)"""
         # whois服务器ip，代理ip
         global _server_ip, _proxy_socks
-        host = _server_ip.get_server_ip(self.whois_srv)  # 服务器地址
-        host = host if host else self.whois_srv  # 如果ip地址为空则使用服务器地址
+        # host = _server_ip.get_server_ip(self.whois_srv)  # 服务器地址
+        # host = host if host else self.whois_srv  # 如果ip地址为空则使用服务器地址
+        host = self.whois_srv
         self.tcpCliSock = socks.socksocket()  # 创建socket对象
         self.tcpCliSock.settimeout(TIMEOUT)  # 设置超时时间
         if Proxy_Flag:  # socks代理配置
