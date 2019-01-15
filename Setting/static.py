@@ -5,20 +5,22 @@
     静态配置及操作对象
 =======================
 
-version   :   1.0
+version   :   1.1
 author    :   @`13
-time      :   2016.11.5
+time      :   2019.1.13
+
 """
 
+import os
 import json
 import logging
 import logging.config
 import datetime
-import os
+
 import sys
 
 # 请检查系统文件命名是否正确,请勿随意更改任何文件的名称
-SYS_NAME = "WhoisAPI"  # 系统文件名
+SYS_NAME = "WHOIS-api"  # 系统文件名
 DIRECTORY_NAME = "Setting"  # 当前文件名
 JSON_NAME = "setting.json"  # JSON配置文件名
 LOGGER_NAME = "logger.conf"  # 日志系统配置文件名
@@ -69,13 +71,11 @@ class Static(object):
     PROXY_SOCKS_TABLE = None  # 代理socks表
     PROXY_SOCKS_REFRESH = None  # 代理socks刷新频率
     SOCKS_TIMEOUT = None  # socks连接超时
-    SOCKS_RECONNECT = None  # socks失败重连数
     # API
     API_PORT = None  # API 服务器端口
     FREQUENCY_PER_SEC = None  # API 服务器访问频率
     # WHOIS
     WHOIS_THREAD_NUM = None  # 批量获取WHOIS线程数
-    RE_TRY_NUM = None # 重试次数
 
     @staticmethod
     def init():
@@ -127,16 +127,13 @@ class Static(object):
             Static.WHOIS_TLD_TABLE = setting['whoisData']['whoisTldTable']
             # socket链接
             Static.SOCKS_TIMEOUT = setting['whoisData']['socksTimeout']
-            Static.SOCKS_RECONNECT = setting['whoisData']['socksReconnect']
             Static.PROXY_SOCKS_TABLE = setting['whoisData']['proxySocksTable']
             Static.PROXY_SOCKS_REFRESH = setting['whoisData']['proxyipRefresh']
             # flask设置
             Static.API_PORT = setting['API server']['prot']
             Static.FREQUENCY_PER_SEC = setting['API server']['frequencyPerSec']
-            # Static.API_LOG_TABLE = setting['whoisData']['apiLogTable']
             # WHOIS 设置
             Static.WHOIS_THREAD_NUM = setting['API server']['whoisThreadNum']
-            Static.RE_TRY_NUM = setting['API server']['reTryNum']
         except Exception as e:
             print '配置文件读取出错: ' + str(e)
             exit(0)
@@ -162,6 +159,8 @@ if __name__ == '__main__':
     # Demo
     print Static.get_local_time()  # 获取当前时间
     Static.init()  # 全部初始化
+
+    print Static.SOCKS_TIMEOUT
     # Static.init()
     # print Static.PATH_CONF
     # print Static.get_now_time()

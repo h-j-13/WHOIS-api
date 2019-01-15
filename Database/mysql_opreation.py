@@ -2,20 +2,22 @@
 # encoding:utf-8
 
 """
-    基于MySQL的数据库操作封装
-=============================
+基于pymysql的MySQL数据库操作封装
 
-version   :   1.0
-author    :   @`13
-time      :   2017.1.17
+为了向上兼容py3及安装方便,弃用MySQLdb转用pymysql
+MySQLdb : http://mysql-python.sourceforge.net/MySQLdb.html
+pymysql : https://pypi.org/project/PyMySQL/
 """
-
-import pymysql as MySQLdb
+# 优先使用pymysql,但是为了兼容性仍命名为MySQLdb
+try:
+    import pymysql as MySQLdb
+except ImportError:
+    import MySQLdb
 from warnings import filterwarnings
-from SQL_generate import SQL_generate
-from WhoisData.domain_status import get_status_value
 
 from Setting.static import Static
+from SQL_generate import SQL_generate
+from WhoisData.domain_status import get_status_value
 
 Static.init()
 log_db = Static.LOGGER
@@ -237,11 +239,18 @@ def Update_WHOIS_record(WHOIS_dict):
 
 if __name__ == '__main__':
     # Demo
-    DB = DataBase()
-    DB.db_connect()
-    SQL = """SELECT domain, whois_flag FROM {DB}.{domainTable} """.format(
-        DB=Static.DATABASE_NAME, domainTable=Static.DOMAIN_TABLE)
-    for result_list in DB.execute_Iterator(SQL):
-        for result in result_list:
-            print result
-    DB.db_close()
+    with DataBase() as db:
+        # Demo for execute
+        # ------------------------------
+        print db.execute("""show databases;""")
+
+        # Demo for execute_Iterator
+        # ------------------------------
+        for results in db.execute_Iterator("""show databases;"""):
+            for res in results:
+                print res
+
+        # Demo for execute_SScursor
+        # ------------------------------
+        for res in db.execute_SScursor("""show databases;"""):
+            print res
