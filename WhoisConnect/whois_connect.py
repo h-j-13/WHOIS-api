@@ -114,7 +114,6 @@ class GetWhoisInfo:
             self.tcpCliSock.connect((host, 43))  # 连接whois服务器
             self.tcpCliSock.send(self.request_data + '\r\n')  # 发出请求
         except Exception as err:  # Exception来自socks.py 中设置的异常
-            print err
             if str(err).find("timed out") != -1 or \
                     str(err).find("TTL expired") != -1:  # 连接超时
                 self.tcpCliSock.close()
@@ -146,7 +145,7 @@ if __name__ == '__main__':
 
     now = time.time()
     domain = "yh888.bz"  # 需要获取的域名
-    whois_server = 'whoiss.afilias-grs.info.'  # 域名对应的whois服务器
+    whois_server = 'whoiSss.afilias-grs.info.'  # 域名对应的whois服务器
     data_result = ''
     try:
         data_result = GetWhoisInfo(domain, whois_server).get()  # 获取
