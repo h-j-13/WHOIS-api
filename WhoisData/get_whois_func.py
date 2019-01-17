@@ -11,6 +11,7 @@ time      :   2017.1.19
 """
 
 from Setting.static import Static
+
 Static.static_value_init()
 
 

@@ -17,8 +17,6 @@ import logging
 import logging.config
 import datetime
 
-import sys
-
 # 请检查系统文件命名是否正确,请勿随意更改任何文件的名称
 SYS_NAME = "WHOIS-api"  # 系统文件名
 DIRECTORY_NAME = "Setting"  # 当前文件名
@@ -45,7 +43,7 @@ class Static(object):
 
     # 配置文件路径
     PATH_LOGGER_CONF = None  # 日志系统配置文件
-    PATH_JSON = None  # 配置文件路径
+    SETTING_FILE_PATH = None  # 配置文件路径
     # 静态变量
     PROCESS_NUM = None  # 处理线程数
     PROCESS_NUM_LOW = None  # 处理线程数(针对防BAN模式)
@@ -86,17 +84,16 @@ class Static(object):
     @staticmethod
     def static_value_init():
         """静态值初始化"""
-        # 获取当前绝对路径
-        # sys.path.append('..')
-        now_path = os.path.abspath('./')
-        # print now_path
-        root_path = now_path.split(SYS_NAME)[0]
-        if root_path[-1] != '/':
-            root_path += '/'
-        root_path += SYS_NAME
-        Static.PATH_JSON = root_path + '/' + DIRECTORY_NAME + '/' + JSON_NAME
-        Static.PATH_LOGGER_CONF = root_path + '/' + DIRECTORY_NAME + '/' + LOGGER_NAME
-        # print root_path
+        global JSON_NAME, LOGGER_NAME
+        # 处理工作目录
+        SETTING_DIR = os.path.dirname(os.path.abspath(__file__))
+        WORK_DIR = SETTING_DIR[:SETTING_DIR.rfind('Setting')]
+        SETTING_FILE_PATH = os.path.join(SETTING_DIR, JSON_NAME)
+        LOG_SETTING_FILE_PATH = os.path.join(SETTING_DIR, LOGGER_NAME)
+        os.chdir(WORK_DIR)
+        # 读取文件
+        Static.PATH_JSON = SETTING_FILE_PATH
+        Static.PATH_LOGGER_CONF = LOG_SETTING_FILE_PATH
         try:
             # 读取JSON文件获取配置
             jsonFile = file(Static.PATH_JSON)
@@ -122,8 +119,8 @@ class Static(object):
             Static.DOMAIN_TABLE = setting['whoisData']['domainTable']
             # 辅助数据
             Static.SRVIP_TABLE = setting['whoisData']['svripTable']
-            Static.WHOIS_FUNC_FILE = str(root_path + '/' + WHOIS_Data_MOUDLE_NAME + '/')
-            Static.WHOIS_FUNC_FILE += str(setting['whoisData']['whoisFuncFile'])
+            Static.WHOIS_FUNC_FILE = os.path.join(WORK_DIR, WHOIS_Data_MOUDLE_NAME,
+                                                  str(setting['whoisData']['whoisFuncFile']))
             Static.WHOIS_TLD_TABLE = setting['whoisData']['whoisTldTable']
             # socket链接
             Static.SOCKS_TIMEOUT = setting['whoisData']['socksTimeout']
@@ -160,7 +157,7 @@ if __name__ == '__main__':
     print Static.get_local_time()  # 获取当前时间
     Static.init()  # 全部初始化
 
-    print Static.SOCKS_TIMEOUT
+    print Static.WHOIS_FUNC_FILE
     # Static.init()
     # print Static.PATH_CONF
     # print Static.get_now_time()
