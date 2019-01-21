@@ -132,7 +132,6 @@ class Static(object):
             # WHOIS 设置
             Static.WHOIS_THREAD_NUM = setting['API server']['whoisThreadNum']
         except Exception as e:
-            raise e
             print '配置文件读取出错: ' + str(e)
             exit(0)
 
