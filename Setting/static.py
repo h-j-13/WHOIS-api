@@ -105,11 +105,11 @@ class Static(object):
             Static.COMMIT_NUM = setting['System']['commitNum']
             Static.PROXY_SOCKS_FLAG = setting['System']['proxySocks']
             # 数据库
-            Static.PORT = setting['database']['port']
-            Static.USER = setting['database']['user']
-            Static.HOST = setting['database']['host']
-            Static.PASSWD = setting['database']['passwd']
-            Static.CHARSET = setting['database']['charset']
+            Static.PORT = setting['database']['PORT']
+            Static.USER = setting['database']['USER']
+            Static.HOST = setting['database']['HOST']
+            Static.PASSWD = setting['database']['PASSWD']
+            Static.CHARSET = setting['database']['CHARSET']
             # API
             # ---------------------------------------------------
             # 核心数据
@@ -127,11 +127,12 @@ class Static(object):
             Static.PROXY_SOCKS_TABLE = setting['whoisData']['proxySocksTable']
             Static.PROXY_SOCKS_REFRESH = setting['whoisData']['proxyipRefresh']
             # flask设置
-            Static.API_PORT = setting['API server']['prot']
+            Static.API_PORT = setting['API server']['port']
             Static.FREQUENCY_PER_SEC = setting['API server']['frequencyPerSec']
             # WHOIS 设置
             Static.WHOIS_THREAD_NUM = setting['API server']['whoisThreadNum']
         except Exception as e:
+            raise e
             print '配置文件读取出错: ' + str(e)
             exit(0)
 
