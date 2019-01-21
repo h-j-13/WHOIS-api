@@ -37,6 +37,11 @@ def WHOIS(domain, cache={}):
     if cache.has_key(domain):
         return json.dumps(cache[domain], indent=1)
     else:
+        # just for test
+        if domain == 'test.com':
+            import time
+            time.sleep(10)
+        # -
         data = whois(domain)
         if data.has_key('flag') and data['flag'] > 0:  # 只缓存正常数据
             if len(cache) >= 10000:

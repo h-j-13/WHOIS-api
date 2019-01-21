@@ -45,13 +45,10 @@ def get_domain_whois(raw_domain=""):
     domain_punycode = Domain.get_punycode_domain()  # punycode编码域名
     tld = Domain.get_tld()  # 域名后缀
     WhoisSerAddr = Resource.TLD.get_server_addr(tld)  # 获取whois地址,失败=None
-    WhoisSerIP = Resource.WhoisSrv.get_server_ip(WhoisSerAddr)  # 获取whois地址的ip(随机取一个),失败=None
+    # WhoisSerIP = Resource.WhoisSrv.get_server_ip(WhoisSerAddr)  # 获取whois地址的ip(随机取一个),失败=None
     WhoisFunc = Resource.WhoisFunc.get_whois_func(WhoisSerAddr)  # 获取TLD对应的提取函数名称
 
-    log_get_whois.info('whois : ' +
-                       str(WhoisSerAddr) +
-                       '->' + str(WhoisSerIP) +
-                       ' use:' + str(WhoisFunc))
+    log_get_whois.info('whois : ' + str(WhoisSerAddr) + ' use:' + str(WhoisFunc))
 
     # 获取用于通信的whois服务器地址
     # 优先级 : ip > whois地址 > None (失败)
