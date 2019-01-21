@@ -34,22 +34,16 @@ def index():
 @app.route('/WHOIS/<domain>')
 def WHOIS(domain, cache={}):
     """获取单一域名的WHOIS数据"""
-    if cache.has_key(domain):
-        return json.dumps(cache[domain], indent=1)
-    else:
-        # just for test
-        if domain == 'test.com':
-            import time
-            time.sleep(10)
-        # -
-        data = whois(domain)
-        if data.has_key('flag') and data['flag'] > 0:  # 只缓存正常数据
-            if len(cache) >= 10000:
-                cache.popitem()
-            cache[domain] = data
-            return json.dumps(cache[domain], indent=1)
-        else:
-            return json.dumps(data, indent=1)
+    # if cache.has_key(domain):
+    #     return json.dumps(cache[domain], indent=1)
+    # else:
+    # just for test
+    if domain == 'test.com':
+        import time
+        time.sleep(10)
+    # 总是现场查询
+    data = whois(domain)
+    return json.dumps(data, indent=1)
 
 
 @app.route('/WHOIS/')
