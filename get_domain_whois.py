@@ -50,29 +50,20 @@ def get_domain_whois(raw_domain=""):
 
     log_get_whois.info('whois : ' + str(WhoisSerAddr) + ' use:' + str(WhoisFunc))
 
-    # 获取用于通信的whois服务器地址
-    # 优先级 : ip > whois地址 > None (失败)
     WhoisConnectAddr = WhoisSerAddr
-    # if WhoisConnectAddr is None:
-    #     WhoisConnectAddr = WhoisSerAddr
-    # if not WhoisConnectAddr:
-    #     log_get_whois.error(raw_domain + ' - fail : whois通信地址获取失败')
-    #     return None
+    if not WhoisConnectAddr:
+        log_get_whois.error(raw_domain + ' | ' + tld + ' - whois通信地址获取失败')
+        return {'domain': domain_punycode, 'error': 'whois通信地址获取失败'}
 
     # 获取原始whois数据
     raw_whois_data = ''  # 原始whois数据
     data_flag = 1  # whois通信标记
     try:
         raw_whois_data = whois_connect.GetWhoisInfo(domain_punycode, WhoisConnectAddr).get()
-    except whois_connect.WhoisConnectException as connect_error:
-        data_flag = 0 - int(str(connect_error))
-    if raw_whois_data is None:
-        data_flag = -5  # 获取到空数据，flag = -5
+    except whois_connect.WhoisConnectException as connect_error:  # 二级whois解析过程错误记录
+        data_flag = - int(str(connect_error))
 
-    # 处理原始WHOIS数据
-    log_get_whois.info('flag : ' + str(data_flag))
-
-    # 动态模版解析WHOIS数据
+    # 处理原始whois数据
     whois_dict = get_result(domain_punycode,
                             tld,
                             str(WhoisSerAddr),
