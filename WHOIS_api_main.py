@@ -14,6 +14,9 @@ time      :   2017.11.12
 import json
 from flask import Flask
 from flask import request
+from tornado.ioloop import IOLoop
+from tornado.wsgi import WSGIContainer
+from tornado.httpserver import HTTPServer
 
 from Setting.static import Static
 from get_domain_whois import whois, whois_list
@@ -54,4 +57,7 @@ def WHOIS_list():
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=Static.API_PORT, debug=True)  # 开放公网
+    # 利用tornado部署flask应用
+    http_server = HTTPServer(WSGIContainer(app))
+    http_server.listen(Static.API_PORT, )
+    IOLoop.instance().start()
