@@ -207,7 +207,7 @@ def whois_list(raw_domain_list):
     # 构造返回数据
     result_str = ""
     while not WHOIS_queue.empty():
-        result_str += format_WHOIS_record(WHOIS_queue.get())
+        result_str += WHOIS_queue.get()
         result_str += "\n"
     return result_str
 

@@ -158,6 +158,7 @@ if __name__ == '__main__':
     Static.init()  # 全部初始化
 
     print Static.WHOIS_FUNC_FILE
-    # Static.init()
+    Static.init()
+    Static.LOGGER.error('info')
     # print Static.PATH_CONF
     # print Static.get_now_time()
