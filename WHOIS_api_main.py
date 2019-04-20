@@ -43,7 +43,6 @@ def WHOIS(domain):
     # 总是现场查询
     data = {"domain": domain, "flag": 0}
     query_source = request.args.get('from', default='online', type=str)
-    print query_source
     try:
         if query_source == 'db':  # 指明从db中查询数据
             data = whois_from_db(domain)
