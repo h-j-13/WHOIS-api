@@ -83,8 +83,6 @@ def get_result(domain_punycode, tld, whois_addr, func_name, data, flag):
                     domain_whois['details'] = whois_details_first + \
                                               "\n##############################\n\n" + \
                                               whois_details_sec
-            else:
-                domain_whois['flag'] = -3  # 未找到二级服务器
         except WhoisConnectException as connect_error:  # 二级whois解析过程错误记录
             domain_whois['flag'] = -2  # 二级错误
     try:

@@ -21,9 +21,10 @@ from tornado.wsgi import WSGIContainer
 from tornado.httpserver import HTTPServer
 
 from Setting.static import Static
-from get_domain_whois import whois, whois_list
+from get_domain_whois import whois, whois_list, whois_from_db
 
 Static.init()
+log = Static.LOGGER
 app = Flask("WHOIS api")
 
 
@@ -40,13 +41,20 @@ def index():
 def WHOIS(domain):
     """获取单一域名的WHOIS数据"""
     # 总是现场查询
-    data = {}
+    data = {"domain": domain, "flag": 0}
+    query_source = request.args.get('from', default='online', type=str)
+    print query_source
     try:
-        data = whois(domain)
+        if query_source == 'db':  # 指明从db中查询数据
+            data = whois_from_db(domain)
+            if not data:
+                data = whois(domain)
+        else:  # 默认现场查询
+            data = whois(domain)
     except Exception as e:
-        print "Error " + str(e.__class__) + " | " + e.message
-        print "Error details : " + traceback.format_exc()
-    return json.dumps(data, indent=1)
+        log.error(domain + " Error " + str(e.__class__) + " | " + e.message)
+        log.error("Error details : " + traceback.format_exc())
+    return json.dumps(data, indent=2)
 
 
 @app.route('/WHOIS/')

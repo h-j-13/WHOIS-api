@@ -124,6 +124,28 @@ class DataBase:
                 log_db.error("execute |sql(no result) - Error:" + str(e))
                 log_db.error("SQL : " + sql)
 
+    def query_one(self, sql):
+        """
+        查询一条结果
+        """
+        result = None
+        try:
+            self.cursor.execute(sql)
+            result = self.cursor.fetchone()
+        except MySQLdb.Error, e:
+            if e.args[0] == 2013 or e.args[0] == 2006:  # 数据库连接出错，重连
+                self.db_close()
+                self.db_connect()
+                self.db_commit()
+                log_db.error("query_one |sql - time out,reconnect")
+                log_db.error("query_one |sql - Error 2006/2013 :" + str(e))
+                log_db.error("sql = " + str(sql))
+                result = self.execute(sql)  # 重新执行
+            else:
+                log_db.error("query_one |sql - Error:" + str(e))
+                log_db.error('SQL : ' + sql)
+        return result
+
     def execute(self, sql):
         """
         执行SQL语句

@@ -19,7 +19,7 @@ from Setting.global_resource import *  # 全局资源
 from Setting.static import Static  # 静态变量,设置
 from WhoisConnect import whois_connect  # Whois通信
 from WhoisData.info_deal import get_result  # Whois处理函数
-from Database.db_opreation import DataBase, Update_WHOIS_record  # 数据库对象
+from Database.db_opreation import SQL_generate, DataBase, Update_WHOIS_record  # 数据库对象
 
 Static.init()
 Resource.global_object_init()
@@ -85,6 +85,31 @@ def get_domain_whois(raw_domain=""):
         Update_WHOIS_record(whois_dict)
 
     return whois_dict
+
+
+def whois_from_db(domain):
+    """从数据库查询whois"""
+    with DataBase() as db:
+        db.execute_no_return("""USE Beijing_WHOWAS""")
+        whois = db.query_one(SQL_generate.QUERY_WHOIS(domain))
+        if whois:
+            whois_dict = {}
+            for k, v in zip(
+                    ['domain', 'sec_whois_srv', 'domain_status', 'registrar', 'reg_name', 'reg_phone', 'reg_email',
+                     'org_name', 'name_server', 'reg_date', 'expir_date', 'updated_date'], whois):
+                whois_dict[k] = str(v)
+            whois_dict['name_server'] = whois_dict['name_server'].split(";")
+            whois_dict["details"] = ""
+            whois_raw = db.query_one(SQL_generate.QUERY_WHOIS_raw(domain))
+            if whois_raw:
+                whois_dict["details"] = whois_raw[1]
+            whois_dict["top_whois_srv"] = ""
+            domain = db.query_one(SQL_generate.QUERY_domain(domain))
+            if domain:
+                whois_dict["top_whois_srv"] = domain[1]
+            return whois_dict
+        else:
+            return None
 
 
 def whois(raw_domain):
@@ -216,8 +241,11 @@ def whois_list(raw_domain_list):
 
 if __name__ == '__main__':
     # Demo
+
+    print whois_from_db("baidu.com")
+
     # print whois('baidu.com')
-    print whois('bilibili.com')['details']
+    # print whois('bilibili.com')['details']
     # print whois_list(
     #     ['baidu.com', 'sina.com', 'acfun.com', 'douyu.com', 'qq.com', 'baidu.com', 'sina.com', 'acfun.com', 'douyu.com',
     #      'qq.com', 'baidu.com', 'sina.com', 'acfun.com', 'douyu.com', 'qq.com', 'baidu.com', 'sina.com', 'acfun.com',

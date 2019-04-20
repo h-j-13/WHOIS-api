@@ -133,8 +133,29 @@ class SQL_generate:
         SQL += """`updated_date` = '{Value}' """.format(Value=whois_dict['updated_date'])
         return SQL
 
+    @staticmethod
+    def QUERY_domain(domain):
+        """查询WHOIS原始信息"""
+        return """SELECT `domain`,top_whois_srv FROM `domain_{n}` WHERE `domain` = '{d}'""".format(
+            d=domain, n=str(get_table_num(domain))
+        )
+
+    @staticmethod
+    def QUERY_WHOIS(domain):
+        """查询WHOIS"""
+        return """SELECT `domain`,sec_whois_srv,domain_status,registrar,reg_name,reg_phone,reg_email,org_name,name_server,creation_date,expiration_date,updated_date FROM `WHOIS_{n}` WHERE domain = '{d}'""".format(
+            d=domain, n=str(get_table_num(domain))
+        )
+
+    @staticmethod
+    def QUERY_WHOIS_raw(domain):
+        """查询WHOIS原始信息"""
+        return """SELECT * FROM `WHOIS_raw_{n}` WHERE domain = '{d}'""".format(
+            d=domain, n=str(get_table_num(domain))
+        )
+
 
 if __name__ == '__main__':
     # Demo
-    print SQL_generate.GET_WHOIS_INFO('baidu.com', ['details', 'flag'], 'whois')
-    print SQL_generate.WHOWAS_TRANSFORM('whowas', 'whois', 'baidu.com')
+    print SQL_generate.QUERY_WHOIS('baidu.com')
+    print SQL_generate.QUERY_WHOIS_raw('baidu.com')
