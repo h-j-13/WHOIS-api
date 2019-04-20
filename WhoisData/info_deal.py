@@ -67,8 +67,8 @@ def get_result(domain_punycode, tld, whois_addr, func_name, data, flag):
             try:
                 whois_details_first = GetWhoisInfo('=' + domain_punycode,
                                                    whois_addr).get()
-            except WhoisConnectException as connect_error:  # 二级whois解析过程错误记录
-                domain_whois['flag'] = 0 - int(str(connect_error))
+            except WhoisConnectException as connect_error:
+                domain_whois['flag'] = -1  # WHOIS一级服务器网络错误
 
         # 2，处理二级whois服务器
         whois_details_sec = None
@@ -83,8 +83,10 @@ def get_result(domain_punycode, tld, whois_addr, func_name, data, flag):
                     domain_whois['details'] = whois_details_first + \
                                               "\n##############################\n\n" + \
                                               whois_details_sec
+            else:
+                domain_whois['flag'] = -3  # 未找到二级服务器
         except WhoisConnectException as connect_error:  # 二级whois解析过程错误记录
-            domain_whois['flag'] = -10 - int(str(connect_error))
+            domain_whois['flag'] = -2  # 二级错误
     try:
         # 使用提取函数处理whois获取字典 依次解析一级/二级WHOIS数据
         domain_whois = eval('{func}(whois_details_first, domain_whois)'.format(func=func_name))
@@ -105,7 +107,8 @@ def get_result(domain_punycode, tld, whois_addr, func_name, data, flag):
                     if sec_domain_whois[k].strip():
                         domain_whois[k] = sec_domain_whois[k]
     except Exception as e:
-        log_func.error(domain_punycode + '->' + func_name + ' 提取函数处理失败 ' + str(e))
+        log_func.error(domain_punycode + '->' + func_name + '提取函数处理失败 ' + str(e))
+        return {'domain': domain_punycode, 'error': '提取函数处理失败', 'flag': 0}
     # 标准化时间
     domain_whois['creation_date'] = format_timestamp(domain_whois['creation_date'])
     domain_whois['expiration_date'] = format_timestamp(domain_whois['expiration_date'])

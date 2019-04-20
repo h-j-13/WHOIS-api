@@ -226,12 +226,17 @@ def Update_WHOIS_record(WHOIS_dict):
     :param WHOIS_dict: WHOIS数据字典
     """
     with DataBase() as db:
+        # FQDN
         db.execute_no_return(SQL_generate.INSERT_FQDN(WHOIS_dict['domain']))
+        # domain
         db.execute_no_return(SQL_generate.INSERT_DOMAIN(WHOIS_dict))
+        # whois_raw
         WHOIS_dict['details'] = WHOIS_dict['details'].replace("\\", "").replace("'", " \\'").replace('"', ' \\"')
         db.execute_no_return(SQL_generate.INSERT_WHOIS_RAW(WHOIS_dict))
+        # whois
         WHOIS_dict['domain_status'] = get_status_value(";".join(WHOIS_dict['domain_status']))
         db.execute_no_return(SQL_generate.INSERT_WHOIS(WHOIS_dict))
+        print SQL_generate.INSERT_WHOIS(WHOIS_dict)
         db.db_commit()
 
 
@@ -239,7 +244,7 @@ if __name__ == '__main__':
     # Demo
     DB = DataBase()
     DB.db_connect()
-    SQL = """SELECT domain, whois_flag FROM {DB}.{domainTable} """.format(
+    SQL = """SELECT `domain`, whois_flag FROM {DB}.{domainTable} """.format(
         DB=Static.DATABASE_NAME, domainTable=Static.DOMAIN_TABLE)
     for result_list in DB.execute_Iterator(SQL):
         for result in result_list:

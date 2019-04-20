@@ -104,7 +104,7 @@ class SQL_generate:
 
     @staticmethod
     def INSERT_WHOIS_RAW(whois_dict):
-        SQL = """INSERT IGNORE Beijing_WHOWAS.`{table}` set """.format(
+        SQL = """REPLACE INTO Beijing_WHOWAS.`{table}` set """.format(
             table='WHOIS_raw_' + str(get_table_num(whois_dict['domain'])))
         SQL += """`raw_whois` = '{Value}' ,""".format(Value=whois_dict['details'])
         SQL += """`domain` = '{Value}' """.format(Value=whois_dict['domain'])
@@ -117,7 +117,7 @@ class SQL_generate:
         :param whois_table_name: whois表名
         :return: 插入whois表的SQL语句
         """
-        SQL = """INSERT IGNORE Beijing_WHOWAS.`{table}` set """.format(
+        SQL = """REPLACE INTO Beijing_WHOWAS.`{table}` set """.format(
             table='WHOIS_' + str(get_table_num(whois_dict['domain'])))
         SQL += """`domain` = '{Value}', """.format(Value=whois_dict['domain'])
         SQL += """`domain_status` = '{Value}', """.format(Value=whois_dict['domain_status'])

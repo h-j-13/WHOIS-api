@@ -35,15 +35,8 @@ def index():
 
 
 @app.route('/WHOIS/<domain>')
-def WHOIS(domain, cache={}):
+def WHOIS(domain):
     """获取单一域名的WHOIS数据"""
-    # if cache.has_key(domain):
-    #     return json.dumps(cache[domain], indent=1)
-    # else:
-    # just for test
-    if domain == 'test.com':
-        import time
-        time.sleep(10)
     # 总是现场查询
     data = whois(domain)
     return json.dumps(data, indent=1)

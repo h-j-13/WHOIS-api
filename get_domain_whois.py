@@ -30,6 +30,14 @@ domain_queue = Queue.Queue()
 global WHOIS_queue
 WHOIS_queue = Queue.Queue()
 
+WHOIS_ERROR = {
+    "0": "无法处理/未处理",
+    "1": "正常",
+    "-1": "一级WHOIS服务器通信出现问题",
+    "-2": "二级WHOIS服务器通信出现问题",
+    "-3": "未获取到二级WHOIS服务器"
+}
+
 
 def get_domain_whois(raw_domain=""):
     """
@@ -53,7 +61,7 @@ def get_domain_whois(raw_domain=""):
     WhoisConnectAddr = WhoisSerAddr
     if not WhoisConnectAddr:
         log_get_whois.error(raw_domain + ' | ' + tld + ' - whois通信地址获取失败')
-        return {'domain': domain_punycode, 'error': 'whois通信地址获取失败'}
+        return {'domain': domain_punycode, 'error': 'whois通信地址获取失败', 'flag': 0}
 
     # 获取原始whois数据
     raw_whois_data = ''  # 原始whois数据
@@ -61,7 +69,7 @@ def get_domain_whois(raw_domain=""):
     try:
         raw_whois_data = whois_connect.GetWhoisInfo(domain_punycode, WhoisConnectAddr).get()
     except whois_connect.WhoisConnectException as connect_error:  # 二级whois解析过程错误记录
-        data_flag = - int(str(connect_error))
+        data_flag = -1  # 一级错误
 
     # 处理原始whois数据
     whois_dict = get_result(domain_punycode,
@@ -70,11 +78,12 @@ def get_domain_whois(raw_domain=""):
                             WhoisFunc,
                             raw_whois_data,
                             data_flag)
-
     log_get_whois.info(raw_domain + ' - finish')
 
-    if whois_dict and whois_dict.has_key('flag') and whois_dict['flag'] == 1:  # 获取了正确的WHOIS数据
+    # save2db
+    if whois_dict and 'flag' in whois_dict and whois_dict['flag'] == 1:  # 获取了正确的WHOIS数据
         Update_WHOIS_record(whois_dict)
+
     return whois_dict
 
 
@@ -83,15 +92,8 @@ def whois(raw_domain):
     start = time.time()
     result = get_domain_whois(raw_domain)
     end = time.time()
-    if result:
-        if result.has_key('reg_date'):
-            result['creation_date'] = result['reg_date']
-        log_get_whois.error(raw_domain + " -> fin. in " + str(end - start)[:5] + " sec")
-        return result
-    else:
-        log_get_whois.error(raw_domain + " -> error ")
-        return {"domain": raw_domain,
-                "error": "当前无法处理/无法解析的输入"}
+    log_get_whois.error(raw_domain + " -> fin. in " + str(end - start)[:5] + " sec. flag:" + result['flag'])
+    return result
 
 
 def whois_list_thread():

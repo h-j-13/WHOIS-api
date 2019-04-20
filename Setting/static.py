@@ -37,10 +37,6 @@ class Static(object):
             cls._instance = super(Static, cls).__new__(cls, *args, **kw)
         return cls._instance
 
-    def __init__(self):
-        pass
-        # print id(self)
-
     # 配置文件路径
     PATH_LOGGER_CONF = None  # 日志系统配置文件
     SETTING_FILE_PATH = None  # 配置文件路径
