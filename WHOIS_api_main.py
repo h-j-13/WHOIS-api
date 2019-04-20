@@ -12,6 +12,8 @@ time      :   2017.11.12
 """
 
 import json
+import traceback
+
 from flask import Flask
 from flask import request
 from tornado.ioloop import IOLoop
@@ -38,7 +40,12 @@ def index():
 def WHOIS(domain):
     """获取单一域名的WHOIS数据"""
     # 总是现场查询
-    data = whois(domain)
+    data = {}
+    try:
+        data = whois(domain)
+    except Exception as e:
+        print "Error " + str(e.__class__) + " | " + e.message
+        print "Error details : " + traceback.format_exc()
     return json.dumps(data, indent=1)
 
 

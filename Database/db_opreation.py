@@ -236,7 +236,6 @@ def Update_WHOIS_record(WHOIS_dict):
         # whois
         WHOIS_dict['domain_status'] = get_status_value(";".join(WHOIS_dict['domain_status']))
         db.execute_no_return(SQL_generate.INSERT_WHOIS(WHOIS_dict))
-        print SQL_generate.INSERT_WHOIS(WHOIS_dict)
         db.db_commit()
 
 

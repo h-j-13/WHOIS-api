@@ -92,7 +92,7 @@ def whois(raw_domain):
     start = time.time()
     result = get_domain_whois(raw_domain)
     end = time.time()
-    log_get_whois.error(raw_domain + " -> fin. in " + str(end - start)[:5] + " sec. flag:" + result['flag'])
+    log_get_whois.error(raw_domain + " -> fin. in " + str(end - start)[:5] + " sec. flag:" + str(result['flag']))
     return result
 
 
